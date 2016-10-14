@@ -1,0 +1,10 @@
+keypass 123456789
+storepass seguridad123
+alias millave
+
+1.pasamos el archivo a un arreglo de bytes
+2.generamos llave simetrica(AES)
+3.encriptamos el archivo con la llave simetrica(2)
+4.encriptamos la llave simetrica con la llave asimetrica(RSA) publica de la keystore
+5.escribimos la llave simetrica encriptada en el archivo de salida(4)
+6.escribimos el archivo encriptado con llave simetrica(3)
