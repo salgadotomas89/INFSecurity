@@ -23,6 +23,7 @@ import java.security.cert.Certificate;
 // el paquete javax.crypto realiza la encriptacion y desencriptacion
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+import javax.crypto.spec.SecretKeySpec;
 
 public class EncryptWithKeyStore {
 
@@ -44,8 +45,11 @@ public class EncryptWithKeyStore {
 
 	// Generar una llave simetrica para encriptar datos
 	KeyGenerator sKenGen = KeyGenerator.getInstance("AES");
-	Key aesKey = sKenGen.generateKey();
-
+        sKenGen.init(128);
+        Key aesKey = sKenGen.generateKey();
+        aesKey = new SecretKeySpec("111111111111111111".getBytes(),  0, 16, "AES");
+        
+        
 	// Inicializar el Objeto Cipher AES 
 	Cipher aesCipher = Cipher.getInstance("AES");
 	aesCipher.init(Cipher.ENCRYPT_MODE, aesKey);
@@ -61,8 +65,10 @@ public class EncryptWithKeyStore {
         // Lee las llaves privada y publica del keystore.
 	Certificate cert = myKeyStore.getCertificate("millave");//le pasamos nuestro alias de nuestro keystore
 	PublicKey publicKey = cert.getPublicKey();
+          System.out.println("publica"+publicKey);
 	@SuppressWarnings("unused")
-	PrivateKey privatekey = (PrivateKey) myKeyStore.getKey("mykey", "password".toCharArray()); 
+	PrivateKey privatekey = (PrivateKey) myKeyStore.getKey("millave", "password".toCharArray()); 
+          System.out.println("PRIVATE"+privatekey);
 	
         // Inicializa el Objeto Cipher RSA
 	Cipher rsaCipher = Cipher.getInstance("RSA");
@@ -70,6 +76,12 @@ public class EncryptWithKeyStore {
 
 	// Encriptar llave simetrica AES con la llave publica RSA
 	byte[] encodedKey = rsaCipher.doFinal(aesKey.getEncoded());
+        
+        /*
+        rsaCipher.init(Cipher.DECRYPT_MODE, privatekey);//incializamos el objeto rsa
+        byte[] wii = rsaCipher.doFinal(encodedKey);
+        String deses = new String(wii);
+          System.out.println("key:"+deses);*/
 
 	System.out.println("Abriendo archivo a escribir: "+outFile);
 	FileOutputStream outToFile = new FileOutputStream(outFile);
